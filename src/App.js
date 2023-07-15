@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import "./styles/App.css";
 import PostList from "./components/PostList";
 
 import PostForm from "./components/PostForm";
-import MySelect from "./components/UI/select/MySelect";
+import PostFilter from "./components/PostFilter";
 
 function App() {
 	const [posts, setPosts] = useState([
@@ -14,7 +14,23 @@ function App() {
 		{ id: 5, title: "Cow", body: "Chewing" },
 	]);
 
-	const [selectedSort, setSelectedSort] = useState("");
+	const [filter, setFilter] = useState({ sort: "sorting by", query: "" });
+	console.log(filter);
+
+	const sortedPosts = useMemo(() => {
+		if (filter.sort === "sorting by") {
+			return posts;
+		}
+		return [...posts].sort((a, b) =>
+			a[filter.sort].localeCompare(b[filter.sort])
+		);
+	}, [filter.sort, posts]);
+
+	const sortedAndSearchedPosts = useMemo(() => {
+		return sortedPosts.filter((post) =>
+			post.title.toLowerCase().includes(filter.query.toLowerCase())
+		);
+	}, [filter.query, sortedPosts]);
 
 	const createPost = (newPost) => {
 		setPosts([...posts, newPost]);
@@ -24,30 +40,16 @@ function App() {
 		setPosts(posts.filter((item) => item.id !== post.id));
 	};
 
-	const sortPosts = (sort) => {
-		setSelectedSort(sort);
-		setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
-	}
-
 	return (
 		<div className="App">
 			<PostForm create={createPost} />
 			<hr style={{ margin: "15px" }} />
-			<MySelect
-				value={selectedSort}
-				onChangeHandler={sortPosts}
-				defaultValue="sorting by"
-				options={[
-					{ value: "title", name: "by name" },
-					{ value: "body", name: "by description" },
-				]}
+			<PostFilter filter={filter} setFilter={setFilter} />
+			<PostList
+				remove={removePost}
+				posts={sortedAndSearchedPosts}
+				title={"List of posts JS"}
 			/>
-			<PostList remove={removePost} posts={posts} title={"List of posts JS"} />
-			{posts.length !== 0 || (
-				<h2 style={{ textAlign: "center", marginTop: "20px", color: "red" }}>
-					There are no posts
-				</h2>
-			)}
 		</div>
 	);
 }
