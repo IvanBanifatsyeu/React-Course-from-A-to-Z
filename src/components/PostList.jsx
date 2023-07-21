@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import PostItems from "./PostItems";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 const PostList = ({ posts, title, remove }) => {
+  const [isDelay, setIsDelay] = useState(true)
+
+   setTimeout(() => setIsDelay(false), 0)
+
 	return (
 		<div>
-			<h1 style={{ textAlign: "center" }}>{title}</h1>
+			{isDelay || <h1 style={{ textAlign: "center" }}>{title}</h1> } 
 			<TransitionGroup>
 				{posts.map((post, index) => (
 					<CSSTransition key={post.id} timeout={500} classNames="post">
@@ -14,9 +18,9 @@ const PostList = ({ posts, title, remove }) => {
 				))}
 			</TransitionGroup>
 
-			{posts.length !== 0 || (
+			{(posts.length !== 0 || isDelay  ) || (
 				<h2 style={{ textAlign: "center", marginTop: "20px", color: "red" }}>
-					There are no posts
+					"There are no posts"
 				</h2>
 			)}
 		</div>
