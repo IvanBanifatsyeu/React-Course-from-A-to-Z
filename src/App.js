@@ -10,20 +10,29 @@ import { usePosts } from "./hooks/usePosts";
 import PostService from "./API/PostService";
 import Loader from "./components/UI/Loader/Loader";
 import { useFetching } from "./hooks/useFetching";
+import { getPageCount } from "./utils/pages";
+import Pagination from "./components/UI/pagination/Pagination";
 
 function App() {
 	const [posts, setPosts] = useState([]);
 	const [filter, setFilter] = useState({ sort: "sorting by", query: "" });
 	const [modal, setModal] = useState(false);
+	const [limit] = useState(10);
+	const [totalPages, setTotalPages] = useState(0);
+	const [page, setPage] = useState(1);
 	const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
-	// const [isPostsLoading, setIsPostsLoading] = useState(false);
-	const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
-		const posts = await PostService.getAll();
-		setPosts(posts);
+	
+
+	const [fetchPosts, isPostsLoading, postError] = useFetching(async (limit, page ) => {
+		const response = await PostService.getAll(limit, page);
+		setPosts(response.data);
+		const totalCount = response.headers["x-total-count"];
+		setTotalPages(getPageCount(totalCount, limit));
 	});
 
+
 	useEffect(() => {
-		fetchPosts();
+		fetchPosts(limit, page);
 	}, []);
 
 	const createPost = (newPost) => {
@@ -35,8 +44,15 @@ function App() {
 		setPosts(posts.filter((item) => item.id !== post.id));
 	};
 
+	const ChangePage = (page) => {
+         setPage(page);
+		 fetchPosts(limit, page)
+		 
+	}
+
 	return (
 		<div className="App">
+			{console.log("render")}
 			<MyButton style={{ marginTop: "30px" }} onClick={() => setModal(true)}>
 				Create Post
 			</MyButton>
@@ -45,7 +61,7 @@ function App() {
 			</MyModal>
 			<hr style={{ margin: "15px" }} />
 			<PostFilter filter={filter} setFilter={setFilter} />
-			{postError && <h1>A error has occurred - {postError}</h1> }
+			{postError && <h1>A error has occurred - {postError}</h1>}
 			{isPostsLoading ? (
 				<div
 					style={{
@@ -63,6 +79,8 @@ function App() {
 					title={"List of posts JS"}
 				/>
 			)}
+			<Pagination page={page} ChangePage={ChangePage} totalPages={totalPages} />
+			
 		</div>
 	);
 }

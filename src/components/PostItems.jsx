@@ -9,7 +9,7 @@ const PostItems = ({remove, ...props}) => {
 		<div className="post">
 			<div className="post__content">
 				<strong>
-					{props.index + 1} . {props.post.title}
+					{props.post.id} . {props.post.title}
 				</strong>
 				<div>{props.post.body}</div>
 			</div>
