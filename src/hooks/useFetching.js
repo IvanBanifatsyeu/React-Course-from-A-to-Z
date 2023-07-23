@@ -8,7 +8,7 @@ export const useFetching = (callback) => {
 	const fetching = async (...arg) => {
 		try {
 			setIsLoading(true);
-          await new Promise((res) => setTimeout(res , 1000) )
+          await new Promise((res) => setTimeout(res , 500) )
           await callback(...arg)
 		} catch (e) {
 			setError(e.message);
