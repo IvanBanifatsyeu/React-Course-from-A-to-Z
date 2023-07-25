@@ -14,16 +14,23 @@
 	width: 800px;
 }
 
+.post__btns {
+	display: flex;
+}
+
 .post-enter {
 	transform: translateX(350px);
 }
+
 .post-enter-active {
 	transform: translateX(0px);
 	transition: all 500ms ease-in;
 }
+
 .post-exit {
 	opacity: 1;
 }
+
 .post-exit-active {
 	transform: translateX(-350px);
 	transition: all 500ms ease-in;
@@ -67,4 +74,29 @@
 	margin-right: 4px;
 	border-radius: 4px;
 	font-weight: 500;
+}
+
+.textStyle {
+	color: rgb(38, 0, 255);
+	padding: 20px;
+	
+}
+
+@font-face {
+	font-family: "LobsterRegular";
+	src: local("LobsterRegular"),
+	 url("../fonts/Lobster/Lobster-Regular.ttf") format("truetype");
+	font-weight: normal;
+	}
+
+.lobster {
+	color: blueviolet;
+	font-family: "LobsterRegular";
+	font-size: 70px;
+}	
+
+
+.postById {
+	font-size: 30px;
+	font-family: "LobsterRegular";
 }
