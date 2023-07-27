@@ -15,7 +15,6 @@ function App() {
 			setIsAuth(true)
 		}
 	}, [])
-   console.log(typeof localStorage.getItem('auth'))
 
 	return (
 		<AuthContext.Provider value={{isAuth, setIsAuth}}>
